@@ -1,0 +1,21 @@
+#!/bin/bash
+
+#
+# Script to re-name ppp interface being used by pptp-client to have
+# a form: pptpc<unit>.
+
+OLD_IFNAME=$1
+NEW_IFNAME=`echo "$6"|awk '{print $1}'`
+
+IFPREFIX=`echo $NEW_IFNAME | sed s/[0-9]//g`
+if [ "$IFPREFIX" != "pptpc" ]; then
+    # its not a pptp-client interface
+    exit 0;
+fi
+
+# Re-name the interface.  Log all errors to syslog.
+logger -p debug -t "vyatta pptpc"  Re-naming $OLD_IFNAME to $NEW_IFNAME
+ip link set $OLD_IFNAME down
+ip link set $OLD_IFNAME name $NEW_IFNAME | \
+    logger -p debug -t "vyatta pptpc"
+ip link set $NEW_IFNAME up

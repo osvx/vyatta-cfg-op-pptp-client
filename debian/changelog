@@ -1,0 +1,5 @@
+vyatta-cfg-op-pptp-client (0.0.1+vyos1+helium1) unstable; urgency=low
+
+  * Initial release.
+
+ -- William Steve Applegate <wsapplegate@est.un.goret.info>  Wed, 19 Mar 2014 03:03:38 +0100

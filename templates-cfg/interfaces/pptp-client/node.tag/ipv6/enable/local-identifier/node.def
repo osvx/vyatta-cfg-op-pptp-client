@@ -1,0 +1,11 @@
+#
+# Configuration template for the .../pptp-client/node.tag/ipv6/enable/local-identifier parameter
+#
+# Set the IPv6 local identifier.
+#
+
+type: ipv6
+
+help: IPv6 local identifier
+
+

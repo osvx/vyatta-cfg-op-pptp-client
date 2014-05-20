@@ -1,0 +1,18 @@
+#
+# Configuration template for the .../pptp-client/node.tag/local-address parameter
+#
+# Set the IPv4 address of the local side of the PPTP link.
+#
+
+type: ipv4
+
+help: IPv4 address of the local end of the PPTP link
+
+update:	sudo sed -i '/^[0-9:]/d' /etc/ppp/peers/$VAR(../@)
+        sudo sh -c "echo $VAR(@):$VAR(../remote-address/@) >> /etc/ppp/peers/$VAR(../@)"
+
+delete:	sudo sed -i '/^[0-9:]/d' /etc/ppp/peers/$VAR(../@)
+	if [ ! -z "$VAR(../remote-address/@)" ]; then
+	        sudo sh -c "echo :$VAR(../remote-address/@) >> /etc/ppp/peers/$VAR(../@)"
+	fi
+

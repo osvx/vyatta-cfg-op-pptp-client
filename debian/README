@@ -1,0 +1,6 @@
+The Debian Package vyatta-cfg-op-pptp-client
+----------------------------
+
+This package has the Vyatta config and op mode templates and scripts for PPTP client.
+
+ -- William Steve Applegate <wsapplegate@est.un.goret.info> Sun, 4 Nov 2012

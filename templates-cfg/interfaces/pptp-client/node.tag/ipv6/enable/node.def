@@ -1,0 +1,12 @@
+#
+# Configuration template for the .../pptp-client/node.tag/ipv6/enable parameter
+#
+
+help: Enable IPv6 address negotiation on the link
+
+update:	sudo sed -i '/^ipv6 /d' /etc/ppp/peers/$VAR(../../@)
+        sudo sh -c "echo ipv6 $VAR(./local-identifier/@),$VAR(./remote-identifier/@) >> /etc/ppp/peers/$VAR(../../@)"
+
+delete:	sudo sed -i '/^ipv6 /d' /etc/ppp/peers/$VAR(../../@)
+
+

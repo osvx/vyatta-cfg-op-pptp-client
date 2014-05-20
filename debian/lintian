@@ -1,0 +1,2 @@
+vyatta-cfg-op-pptp-client: file-in-unusual-dir
+vyatta-cfg-op-pptp-client: dir-or-file-in-opt

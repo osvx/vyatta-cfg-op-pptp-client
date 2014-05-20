@@ -1,0 +1,27 @@
+#
+# Configuration template for the .../pptp-client/node.tag/mtu parameter
+#
+# Set the IP layer Maximum Transmission Unit (MTU) for the PPTP interface.
+# The value of the MRU option that we negotiate should match our MTU,
+# so we set both the mtu and mru values in the ppp config file.
+#
+
+type: u32
+
+help: Maximum Transmission Unit (MTU)
+
+syntax:expression: $VAR(@) >= 68 && $VAR(@) <= 1500; "MTU must be between 68 and 1500"
+
+val_help: u32:68-1500; Maximum Transmission Unit (MTU) in bytes
+
+default: 1500
+
+update:	sudo sed -i '/^mtu/d' /etc/ppp/peers/$VAR(../@)
+        sudo sh -c "echo mtu $VAR(@) >> /etc/ppp/peers/$VAR(../@)"
+	sudo sed -i '/^mru/d' /etc/ppp/peers/$VAR(../@)
+        sudo sh -c "echo mru $VAR(@) >> /etc/ppp/peers/$VAR(../@)"
+
+delete:	sudo sed -i '/^mtu/d' /etc/ppp/peers/$VAR(../@)
+        sudo sh -c "echo mtu 1492 >> /etc/ppp/peers/$VAR(../@)"
+	sudo sed -i '/^mru/d' /etc/ppp/peers/$VAR(../@) ; \
+        sudo sh -c "echo mru 1492 >> /etc/ppp/peers/$VAR(../@)"

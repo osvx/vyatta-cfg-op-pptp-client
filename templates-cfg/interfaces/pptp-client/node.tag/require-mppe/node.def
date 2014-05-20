@@ -1,0 +1,22 @@
+#
+# Configuration template for the .../pptp-client/node.tag/require-mppe parameter
+# 
+
+help: Require MPPE-128 encryption
+
+update:	sudo sed -i '/^refuse-pap/d' /etc/ppp/peers/$VAR(../@)
+	sudo sed -i '/^refuse-eap/d' /etc/ppp/peers/$VAR(../@)
+	sudo sed -i '/^refuse-chap/d' /etc/ppp/peers/$VAR(../@)
+	sudo sed -i '/^refuse-mschap/d' /etc/ppp/peers/$VAR(../@)
+	sudo sed -i '/^require-mppe-128/d' /etc/ppp/peers/$VAR(../@)
+        sudo sh -c "echo refuse-pap >> /etc/ppp/peers/$VAR(../@)"
+        sudo sh -c "echo refuse-eap >> /etc/ppp/peers/$VAR(../@)"
+        sudo sh -c "echo refuse-chap >> /etc/ppp/peers/$VAR(../@)"
+        sudo sh -c "echo refuse-mschap >> /etc/ppp/peers/$VAR(../@)"
+        sudo sh -c "echo require-mppe-128 >> /etc/ppp/peers/$VAR(../@)"
+
+delete:	sudo sed -i '/^refuse-pap/d' /etc/ppp/peers/$VAR(../@)
+	sudo sed -i '/^refuse-eap/d' /etc/ppp/peers/$VAR(../@)
+	sudo sed -i '/^refuse-chap/d' /etc/ppp/peers/$VAR(../@)
+	sudo sed -i '/^refuse-mschap/d' /etc/ppp/peers/$VAR(../@)
+	sudo sed -i '/^require-mppe-128/d' /etc/ppp/peers/$VAR(../@)

@@ -1,0 +1,17 @@
+#
+# Configuration template for the .../pptp-client/node.tag/user-id parameter
+#
+# This parameter sets the user name that will be used to authenticate
+# this node to the remote node.  Authentication protocol (PAP or CHAP)
+# is determined by the remote node.  This username will be used with
+# either protocol.
+#
+
+type: txt
+
+help: Name for authenticating local machine to PPTP server
+
+update:	sudo sed -i '/^user/d' /etc/ppp/peers/$VAR(../@)
+	sudo sh -c "echo user \\\"$VAR(@)\\\" >> /etc/ppp/peers/$VAR(../@)"
+
+delete:	sudo sed -i '/^user/d' /etc/ppp/peers/$VAR(../@)

@@ -1,0 +1,11 @@
+#
+# Configuration template for the .../pptp-client/node.tag/ipv6/enable/remote-identifier parameter
+#
+# Set the IPv6 remote identifier
+#
+
+type: ipv6
+
+help: IPv6 remote identifier
+
+

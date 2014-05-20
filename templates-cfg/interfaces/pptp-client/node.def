@@ -1,0 +1,87 @@
+tag:
+priority: 360
+#
+# Configuration template for interfaces/pptp-client
+#
+#
+# Define a PPTP interface.
+#
+
+type: txt
+
+help: PPTP client interface name
+
+val_help: pptpcX; Point-to-Point Tunneling Protocol (PPTP) interface name
+
+syntax:expression:  pattern $VAR(@) "^pptpc[0-9]+$" ; "Must be (pptpc0 - pptpc999)"
+
+
+commit:expression: $VAR(./server-ip/) != "" ;                   \
+                   "Must configure the tunnel server-ip for $VAR(@)"
+
+#
+# At create time, we initialize a new PPP provider
+# configuration file with default values.  Other parameters will be inserted by
+# the templates for those parameters.
+#
+create:	
+	ifname=$VAR(@)
+	logfile=/var/log/vyatta/ppp_${ifname}.log
+	sudo touch $logfile
+	sudo chgrp adm $logfile
+	sudo chmod 664 $logfile
+	echo "`date`: PPP interface $ifname created" >> $logfile
+
+	sudo rm -f /etc/ppp/peers/$VAR(@)
+	sudo cp /opt/vyatta/etc/pptp-provider-template \
+	   /etc/ppp/peers/$VAR(@) 
+	sudo sh -c "echo persist  >> /etc/ppp/peers/$VAR(@)"
+	sudo sh -c "echo ipparam $VAR(@) >> /etc/ppp/peers/$VAR(@)"
+	sudo sh -c "echo debug  >> /etc/ppp/peers/$VAR(@)"
+	sudo sh -c "echo logfile $logfile  >> /etc/ppp/peers/$VAR(@)"
+#
+# Delete means that this node and the tree below it has been deleted.
+# We can delete the PPP provider configuration file.  The running PPTP
+# Daemon will be killed at "end:"
+# 
+delete:	
+	ifname=$VAR(@)
+	logfile=/var/log/vyatta/ppp_${ifname}.log
+	echo "`date`: PPP interface $ifname deleted" >> $logfile
+	sudo rm -f /etc/ppp/peers/$VAR(@)
+
+#
+# Three cases are handled here:
+#  1) A new PPTP configuration node has just been added.  Parameters may or
+#     may not have also been added.
+#  2) Some configuration parameters of a previously existing PPTP node
+#     have been changed.
+#  3) A previously existing PPTP configuration node has been deleted.
+# 
+# In case (1) we need to start the daemon for the first time.
+# In case (2) we need to kill and restart the daemon.
+# In case (3) we need to kill the daemon.
+#
+end:	
+	ifname=$VAR(@)
+	logfile=/var/log/vyatta/ppp_${ifname}.log
+	echo "`date`: Stopping PPP daemon for $ifname" >> $logfile
+
+	sudo poff $VAR(@) | logger -p debug -t $VAR(@)-template
+	if [ -e /etc/ppp/peers/$VAR(@) ]; then
+		echo "`date`: Starting PPP daemon for $ifname" >> $logfile
+                ( umask 0; sudo setsid sh -c '/usr/sbin/pppd call $VAR(@) > \
+		  	/tmp/$VAR(@).log 2>&1 &' )
+		# KLUDGE: Wait a bit here to allow the interface to come up,
+		# some stuff may depend on it being available (like vpn ipsec).
+		echo -n "Waiting a few seconds for interface $VAR(@) to come up: "
+		for w in {1..10}; do
+			echo -n "$w..."
+			sleep 1
+			if [ "$(/sbin/ip -o link show $VAR(@) 2>/dev/null | grep UP)" != "" ]; then
+				echo -n "Success!"
+				break
+			fi
+		done
+		echo ""
+	fi

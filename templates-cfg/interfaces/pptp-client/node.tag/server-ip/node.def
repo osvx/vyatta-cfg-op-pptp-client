@@ -1,0 +1,7 @@
+type: txt
+help: Remote IP/DNS address for this tunnel [REQUIRED]
+
+update:	sudo sed -i '/^pty/d' /etc/ppp/peers/$VAR(../@)
+	sudo sh -c "echo pty \\\"/usr/sbin/pptp $VAR(@) --nolaunchpppd\\\" >> /etc/ppp/peers/$VAR(../@)"
+
+delete:	sudo sed -i '/^pty/d' /etc/ppp/peers/$VAR(../@)
