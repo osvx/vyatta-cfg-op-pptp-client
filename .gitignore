@@ -13,4 +13,4 @@
 /INSTALL
 /Makefile.in
 /Makefile
-debian/vyatta-cfg-op-pptp-client
+debian/vyatta-cfg-op-pptp-client*
